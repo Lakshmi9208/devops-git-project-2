@@ -1,2 +1,5 @@
+Project-2: conflict branch side change
+this change is coming from conflict-branch
 Project-2:  this change is from MAIN branch
 This line is added from feature-branch-1
+
