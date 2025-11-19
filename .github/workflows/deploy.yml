@@ -25,3 +25,4 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i ec2_key.pem ubuntu@56.155.140.165 "sudo systemctl restart tomcat10"
 
+
