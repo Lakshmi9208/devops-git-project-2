@@ -1,0 +1,36 @@
+name: Deploy to Tomcat on EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Build project using Maven
+      run: mvn clean package
+
+    - name: Save private key
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+        chmod 600 ec2_key.pem
+
+    - name: Copy WAR file to EC2
+      run: |
+        scp -o StrictHostKeyChecking=no -i ec2_key.pem target/*.war ubuntu@56.155.140.165:/opt/tomcat/webapps/
+
+    - name: Restart Tomcat
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ec2_key.pem ubuntu@56.155.140.165 "sudo systemctl restart tomcat"
